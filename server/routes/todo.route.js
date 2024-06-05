@@ -33,9 +33,6 @@ router.get("/", async(req, res) =>{
 })
 
 
-
-
-
 // Delete
 
 router.delete("/:todoId", async(req, res) =>{
@@ -51,6 +48,35 @@ router.delete("/:todoId", async(req, res) =>{
     }
     res.status(200).json(deleteTodo);
 
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error: "Server error." });
+  }
+})
+
+
+
+// Update
+
+router.put("/:todoId", async(req, res) =>{
+
+  try {
+    const todoId = req.params.todoId;
+    const updates = req.body;
+
+    console.log("Updating todo with ID:", todoId);
+    const existingTodo = await Todo.findById(todoId);
+
+    console.log(existingTodo);
+
+    if (!existingTodo){
+      return (res.status(404).json({error: "Todo is not found."}))
+  }
+
+  const updatedTodo = await Todo.findByIdAndUpdate(todoId, updates, {new: true});
+
+  res.status(200).json(updatedTodo);
 
   } catch (error) {
     console.log(error);
